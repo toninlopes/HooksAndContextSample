@@ -6,7 +6,7 @@ import {
   Button,
 } from 'react-native';
 
-import {savePostAsync} from '../service/connector';
+import {savePostAsync} from '../../service/connector';
 
 export default class SavePost extends Component {
   static navigationOptions = ({navigation}) => {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, FlatList, View, RefreshControl} from 'react-native';
-import User from '../components/User';
+import {User} from './components';
 import {fetchUsersAsync} from '../service/connector';
 
 export default class Users extends Component {

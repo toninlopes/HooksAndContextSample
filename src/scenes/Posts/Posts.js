@@ -9,8 +9,8 @@ import {
   Button,
   Platform,
 } from 'react-native';
-import Post from '../components/Post';
-import {fetchPostsAsync, deletePostAsync} from '../service/connector';
+import {Post} from './components';
+import {fetchPostsAsync, deletePostAsync} from '../../service/connector';
 
 export default class Posts extends Component {
   static navigationOptions = ({navigation}) => {
