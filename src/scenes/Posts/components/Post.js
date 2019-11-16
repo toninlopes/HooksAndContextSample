@@ -1,25 +1,23 @@
-import React, {PureComponent} from 'react';
+import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
 
-export default class Post extends PureComponent {
-  render() {
-    return (
-      <View style={styles.viewItem}>
-        <Text style={styles.title}>{this.props.title}</Text>
-        <Text>{this.props.body}</Text>
-        <Text>{this.props.email}</Text>
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={this.props.onDelete}>
-          <Image
-            source={require('../assets/rubbish-bin.png')}
-            style={styles.imgStyle}
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
+const Post = props => {
+  return (
+    <View style={styles.viewItem}>
+      <Text style={styles.title}>{props.title}</Text>
+      <Text>{props.body}</Text>
+      <Text>{props.email}</Text>
+      <TouchableOpacity style={styles.deleteButton} onPress={props.onDelete}>
+        <Image
+          source={require('../assets/rubbish-bin.png')}
+          style={styles.imgStyle}
+        />
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export default Post;
 
 const styles = StyleSheet.create({
   viewItem: {

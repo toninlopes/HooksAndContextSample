@@ -1,20 +1,20 @@
-import React, {PureComponent} from 'react';
+import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
-export default class User extends PureComponent {
-  render() {
-    return (
-      <TouchableOpacity style={styles.viewItem} onPress={this.props.onPress}>
-        <View style={styles.thumbnail} />
-        <View>
-          <Text style={styles.title}>{this.props.name}</Text>
-          <Text style={styles.subtitle}>{this.props.username}</Text>
-          <Text style={styles.subtitle}>{this.props.email}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-}
+const User = props => {
+  return (
+    <TouchableOpacity style={styles.viewItem} onPress={props.onPress}>
+      <View style={styles.thumbnail} />
+      <View>
+        <Text style={styles.title}>{props.name}</Text>
+        <Text style={styles.subtitle}>{props.username}</Text>
+        <Text style={styles.subtitle}>{props.email}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+export default User;
 
 const styles = StyleSheet.create({
   viewItem: {
