@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   FlatList,
@@ -12,54 +12,52 @@ import {
 import {Post} from './components';
 import {fetchPostsAsync, deletePostAsync} from '../../service/connector';
 
-export default class Posts extends Component {
-  static navigationOptions = ({navigation}) => {
-    const {user} = navigation.state.params || {};
-    const navigateTo = () => navigation.navigate('savePost', {user: user});
+const Posts = props => {
+  // static navigationOptions = ({navigation}) => {
+  //   const {user} = navigation.state.params || {};
+  //   const navigateTo = () => navigation.navigate('savePost', {user: user});
 
-    return {
-      title: `Posts of ${user.name}`,
-      headerRight: () => {
-        if (Platform.OS === 'ios') {
-          return <Button onPress={navigateTo} title="New Post" />;
-        } else {
-          return (
-            <TouchableOpacity
-              style={styles.statusBarButton}
-              onPress={navigateTo}>
-              <Text>{'New Post'}</Text>
-            </TouchableOpacity>
-          );
-        }
-      },
-    };
-  };
+  //   return {
+  //     title: `Posts of ${user.name}`,
+  //     headerRight: () => {
+  //       if (Platform.OS === 'ios') {
+  //         return <Button onPress={navigateTo} title="New Post" />;
+  //       } else {
+  //         return (
+  //           <TouchableOpacity
+  //             style={styles.statusBarButton}
+  //             onPress={navigateTo}>
+  //             <Text>{'New Post'}</Text>
+  //           </TouchableOpacity>
+  //         );
+  //       }
+  //     },
+  //   };
+  // };
 
-  state = {
-    posts: [],
-    isRefresing: false,
-  };
-
-  render() {
-    return (
-      <FlatList
-        data={this.state.posts}
-        refreshing={true}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.isRefresing}
-            onRefresh={async () => await this.fetchDataAsync()}
-          />
-        }
-        extraData={this.state}
-        keyExtractor={this.keyExtractor.bind(this)}
-        renderItem={this.renderItem.bind(this)}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
-    );
-  }
+  const [posts, setPosts] = useState([]);
+  const [isRefresing, setRefresh] = useState(false);
 
   keyExtractor = item => item.id.toString();
+
+  fetchDataAsync = async () => {
+    setRefresh(true);
+    const {user} = props.navigation.state.params;
+    const posts = await fetchPostsAsync(user.id);
+    setPosts(posts);
+    setRefresh(false);
+  };
+
+  deletingPostAsync = async post => {
+    if (await deletePostAsync(post.id)) {
+      const newPosts = posts.filter(item => item.id !== post.id);
+      setPosts(newPosts);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataAsync();
+  }, []);
 
   renderItem = ({item}) => {
     return (
@@ -68,29 +66,30 @@ export default class Posts extends Component {
         title={item.title}
         body={item.body}
         email={item.email}
-        onDelete={async () => await this.deletingPostAsync(item)}
+        onDelete={async () => await deletingPostAsync(item)}
       />
     );
   };
 
-  fetchDataAsync = async () => {
-    this.setState({isRefresing: true});
-    const {user} = this.props.navigation.state.params;
-    const posts = await fetchPostsAsync(user.id);
-    this.setState({posts: posts, isRefresing: false});
-  };
+  return (
+    <FlatList
+      data={posts}
+      refreshing={true}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefresing}
+          onRefresh={async () => await fetchDataAsync()}
+        />
+      }
+      extraData={props}
+      keyExtractor={keyExtractor}
+      renderItem={renderItem}
+      ItemSeparatorComponent={() => <View style={styles.separator} />}
+    />
+  );
+};
 
-  deletingPostAsync = async post => {
-    if (await deletePostAsync(post.id)) {
-      const newPosts = this.state.posts.filter(item => item.id !== post.id);
-      this.setState({posts: newPosts});
-    }
-  };
-
-  componentDidMount() {
-    this.fetchDataAsync();
-  }
-}
+export default Posts;
 
 const styles = StyleSheet.create({
   separator: {
