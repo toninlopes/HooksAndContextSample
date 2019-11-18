@@ -13,28 +13,6 @@ import {Post} from './components';
 import {fetchPostsAsync, deletePostAsync} from '../../service/connector';
 
 const Posts = props => {
-  // static navigationOptions = ({navigation}) => {
-  //   const {user} = navigation.state.params || {};
-  //   const navigateTo = () => navigation.navigate('savePost', {user: user});
-
-  //   return {
-  //     title: `Posts of ${user.name}`,
-  //     headerRight: () => {
-  //       if (Platform.OS === 'ios') {
-  //         return <Button onPress={navigateTo} title="New Post" />;
-  //       } else {
-  //         return (
-  //           <TouchableOpacity
-  //             style={styles.statusBarButton}
-  //             onPress={navigateTo}>
-  //             <Text>{'New Post'}</Text>
-  //           </TouchableOpacity>
-  //         );
-  //       }
-  //     },
-  //   };
-  // };
-
   const [posts, setPosts] = useState([]);
   const [isRefresing, setRefresh] = useState(false);
 
@@ -87,6 +65,26 @@ const Posts = props => {
       ItemSeparatorComponent={() => <View style={styles.separator} />}
     />
   );
+};
+
+Posts.navigationOptions = ({navigation}) => {
+  const {user} = navigation.state.params || {};
+  const navigateTo = () => navigation.navigate('savePost', {user: user});
+
+  return {
+    title: `Posts of ${user.name}`,
+    headerRight: () => {
+      if (Platform.OS === 'ios') {
+        return <Button onPress={navigateTo} title="New Post" />;
+      } else {
+        return (
+          <TouchableOpacity style={styles.statusBarButton} onPress={navigateTo}>
+            <Text>{'New Post'}</Text>
+          </TouchableOpacity>
+        );
+      }
+    },
+  };
 };
 
 export default Posts;

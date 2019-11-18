@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -8,60 +8,51 @@ import {
 
 import {savePostAsync} from '../../service/connector';
 
-export default class SavePost extends Component {
-  static navigationOptions = ({navigation}) => {
-    const {user} = navigation.state.params || {};
-
-    return {
-      title: `Post by ${user.name}`,
-    };
-  };
-
-  constructor(props) {
-    super(props);
-
-    const {user} = this.props.navigation.state.params;
-    this.state = {
-      title: '',
-      body: '',
-      userId: user.id,
-    };
-  }
-
-  render() {
-    return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <TextInput
-          style={styles.input}
-          value={this.state.title}
-          placeholder="Title"
-          editable={true}
-          onChangeText={title => this.setState({title})}
-        />
-        <TextInput
-          style={styles.input}
-          value={this.state.body}
-          placeholder="Message"
-          editable={true}
-          multiline={true}
-          numberOfLines={6}
-          onChangeText={body => this.setState({body})}
-        />
-        <Button title="Save" onPress={async () => await this.saveAsync()} />
-      </KeyboardAvoidingView>
-    );
-  }
+const SavePost = props => {
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
 
   saveAsync = async () => {
     const result = await savePostAsync({
-      title: this.state.title,
-      body: this.state.body,
-      userId: this.state.userId,
+      title,
+      body,
+      userId: props.userId,
     });
-    this.props.navigation.setParams({newPost: result});
-    this.props.navigation.goBack();
+    props.navigation.goBack();
   };
-}
+
+  return (
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <TextInput
+        style={styles.input}
+        value={title}
+        placeholder="Title"
+        editable={true}
+        onChangeText={title => setTitle(title)}
+      />
+      <TextInput
+        style={styles.input}
+        value={body}
+        placeholder="Message"
+        editable={true}
+        multiline={true}
+        numberOfLines={6}
+        onChangeText={body => setBody(body)}
+      />
+      <Button title="Save" onPress={async () => await saveAsync()} />
+    </KeyboardAvoidingView>
+  );
+};
+
+SavePost.navigationOptions = ({navigation}) => {
+  const {user} = navigation.state.params || {};
+
+  return {
+    title: `Post by ${user.name}`,
+  };
+};
+
+export default SavePost;
 
 const styles = StyleSheet.create({
   container: {
