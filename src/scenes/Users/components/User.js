@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import PropTypes from 'prop-types';
 
 const User = props => {
   return (
@@ -15,6 +16,12 @@ const User = props => {
 };
 
 export default User;
+
+User.propTypes = {
+  name: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+};
 
 const styles = StyleSheet.create({
   viewItem: {

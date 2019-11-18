@@ -64,9 +64,10 @@ export default class Posts extends Component {
   renderItem = ({item}) => {
     return (
       <Post
-        {...item}
         key={item.id}
-        deleting={item.deleting}
+        title={item.title}
+        body={item.body}
+        email={item.email}
         onDelete={async () => await this.deletingPostAsync(item)}
       />
     );

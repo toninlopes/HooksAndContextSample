@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, FlatList, View, RefreshControl} from 'react-native';
 import {User} from './components';
-import {fetchUsersAsync} from '../service/connector';
+import {fetchUsersAsync} from '../../service/connector';
 
 export default class Users extends Component {
   state = {
@@ -31,7 +31,14 @@ export default class Users extends Component {
   keyExtractor = item => item.id.toString();
 
   renderItem = ({item}) => {
-    return <User {...item} onPress={() => this.navigateToPosts(item)} />;
+    return (
+      <User
+        name={item.name}
+        email={item.email}
+        username={item.username}
+        onPress={() => this.navigateToPosts(item)}
+      />
+    );
   };
 
   fetchDataAsync = async () => {

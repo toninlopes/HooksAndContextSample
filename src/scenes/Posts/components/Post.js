@@ -1,15 +1,15 @@
 import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
+import PropTypes from 'prop-types';
 
 const Post = props => {
   return (
     <View style={styles.viewItem}>
       <Text style={styles.title}>{props.title}</Text>
       <Text>{props.body}</Text>
-      <Text>{props.email}</Text>
       <TouchableOpacity style={styles.deleteButton} onPress={props.onDelete}>
         <Image
-          source={require('../assets/rubbish-bin.png')}
+          source={require('../../../assets/rubbish-bin.png')}
           style={styles.imgStyle}
         />
       </TouchableOpacity>
@@ -18,6 +18,12 @@ const Post = props => {
 };
 
 export default Post;
+
+Post.propTypes = {
+  title: PropTypes.string.isRequired,
+  body: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
   viewItem: {
