@@ -1,34 +1,28 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, FlatList, View, RefreshControl} from 'react-native';
 import {User} from './components';
 import {fetchUsersAsync} from '../../service/connector';
 
-export default class Users extends Component {
-  state = {
-    users: [],
-    isRefresing: false,
-  };
-
-  render() {
-    return (
-      <FlatList
-        data={this.state.users}
-        refreshing={this.state.isRefresing}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.isRefresing}
-            onRefresh={async () => await this.fetchDataAsync()}
-          />
-        }
-        extraData={this.props}
-        keyExtractor={this.keyExtractor}
-        renderItem={this.renderItem}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
-    );
-  }
+const Users = props => {
+  const [users, setUsers] = useState([]);
+  const [isRefresing, setRefresh] = useState(false);
 
   keyExtractor = item => item.id.toString();
+
+  fetchDataAsync = async () => {
+    setRefresh(true);
+    const users = await fetchUsersAsync();
+    setUsers(users);
+    setRefresh(false);
+  };
+
+  useEffect(() => {
+    fetchDataAsync();
+  }, []);
+
+  navigateToPosts = async user => {
+    props.navigation.navigate('posts', {user: user});
+  };
 
   renderItem = ({item}) => {
     return (
@@ -36,25 +30,30 @@ export default class Users extends Component {
         name={item.name}
         email={item.email}
         username={item.username}
-        onPress={() => this.navigateToPosts(item)}
+        onPress={() => navigateToPosts(item)}
       />
     );
   };
 
-  fetchDataAsync = async () => {
-    this.setState({isRefresing: true});
-    const users = await fetchUsersAsync();
-    this.setState({users, isRefresing: false});
-  };
+  return (
+    <FlatList
+      data={users}
+      refreshing={isRefresing}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefresing}
+          onRefresh={async () => await fetchDataAsync()}
+        />
+      }
+      extraData={props}
+      keyExtractor={keyExtractor}
+      renderItem={renderItem}
+      ItemSeparatorComponent={() => <View style={styles.separator} />}
+    />
+  );
+};
 
-  navigateToPosts = async user => {
-    this.props.navigation.navigate('posts', {user: user});
-  };
-
-  componentDidMount() {
-    this.fetchDataAsync();
-  }
-}
+export default Users;
 
 const styles = StyleSheet.create({
   separator: {
