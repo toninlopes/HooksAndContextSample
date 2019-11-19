@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useReducer} from 'react';
 import {
   StyleSheet,
   FlatList,
@@ -11,9 +11,11 @@ import {
 } from 'react-native';
 import {Post} from './components';
 import {fetchPostsAsync, deletePostAsync} from '../../service/connector';
+import {postsReducer} from '../../reducers';
+import {getPostsAction} from '../../actionTypes';
 
 const Posts = props => {
-  const [posts, setPosts] = useState([]);
+  const [state, dispatch] = useReducer(postsReducer, []);
   const [isRefresing, setRefresh] = useState(false);
 
   keyExtractor = item => item.id.toString();
@@ -22,7 +24,7 @@ const Posts = props => {
     setRefresh(true);
     const {user} = props.navigation.state.params;
     const posts = await fetchPostsAsync(user.id);
-    setPosts(posts);
+    dispatch(getPostsAction(posts));
     setRefresh(false);
   };
 
@@ -51,7 +53,7 @@ const Posts = props => {
 
   return (
     <FlatList
-      data={posts}
+      data={state.posts}
       refreshing={true}
       refreshControl={
         <RefreshControl
