@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useReducer} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   StyleSheet,
   FlatList,
@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import {Post} from './components';
 import {fetchPostsAsync, deletePostAsync} from '../../service/connector';
-import {postsReducer} from '../../reducers';
+import {postsContext} from '../../contexts';
 import {getPostsAction} from '../../actionTypes';
 
 const Posts = props => {
-  const [state, dispatch] = useReducer(postsReducer, []);
+  const [state, dispatch] = useContext(postsContext);
   const [isRefresing, setRefresh] = useState(false);
 
   keyExtractor = item => item.id.toString();

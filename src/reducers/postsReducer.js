@@ -1,4 +1,4 @@
-import {GET_POSTS} from '../actionTypes';
+import {GET_POSTS, ADD_POST} from '../actionTypes';
 
 const postsReducer = (state, action) => {
   switch (action.type) {
@@ -6,6 +6,13 @@ const postsReducer = (state, action) => {
       return {
         ...state,
         posts: action.posts,
+      };
+    case ADD_POST:
+      const newPosts = state.posts;
+      newPosts.unshift(action.post);
+      return {
+        ...state,
+        posts: newPosts,
       };
     default:
       return state;

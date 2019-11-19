@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -7,10 +7,13 @@ import {
 } from 'react-native';
 
 import {savePostAsync} from '../../service/connector';
+import {postsContext} from '../../contexts';
+import {addPostAction} from '../../actionTypes';
 
 const SavePost = props => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const [state, dispatch] = useContext(postsContext);
 
   saveAsync = async () => {
     const result = await savePostAsync({
@@ -18,6 +21,7 @@ const SavePost = props => {
       body,
       userId: props.userId,
     });
+    dispatch(addPostAction(result));
     props.navigation.goBack();
   };
 
