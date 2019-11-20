@@ -12,10 +12,14 @@ import {
 import {Post} from './components';
 import {fetchPostsAsync, deletePostAsync} from '../../service/connector';
 import {postsContext} from '../../contexts';
-import {getPostsAction} from '../../actionTypes';
+import {
+  getPostsAction,
+  updatePostAction,
+  deletePostAction,
+} from '../../actionTypes';
 
 const Posts = props => {
-  const [state, dispatch] = useContext(postsContext);
+  const [{posts}, dispatch] = useContext(postsContext);
   const [isRefresing, setRefresh] = useState(false);
 
   keyExtractor = item => item.id.toString();
@@ -29,9 +33,12 @@ const Posts = props => {
   };
 
   deletingPostAsync = async post => {
+    const newPost = Object.assign({}, post, {
+      deleting: true,
+    });
+    dispatch(updatePostAction(newPost));
     if (await deletePostAsync(post.id)) {
-      const newPosts = posts.filter(item => item.id !== post.id);
-      setPosts(newPosts);
+      dispatch(deletePostAction(post));
     }
   };
 
@@ -46,6 +53,7 @@ const Posts = props => {
         title={item.title}
         body={item.body}
         email={item.email}
+        deleting={item.deleting}
         onDelete={async () => await deletingPostAsync(item)}
       />
     );
@@ -53,7 +61,7 @@ const Posts = props => {
 
   return (
     <FlatList
-      data={state.posts}
+      data={posts.posts}
       refreshing={true}
       refreshControl={
         <RefreshControl

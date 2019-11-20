@@ -13,7 +13,7 @@ import {addPostAction} from '../../actionTypes';
 const SavePost = props => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
-  const [state, dispatch] = useContext(postsContext);
+  const [{posts}, dispatch] = useContext(postsContext);
 
   saveAsync = async () => {
     const result = await savePostAsync({
